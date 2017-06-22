@@ -19,6 +19,7 @@ import communication.udp.UdpSocket;
 import data.robot.RoboList;
 import data.team.TeamList;
 import data.tournament.Tournament;
+import window.main.LogToSystemIO;
 import window.tournament.TournamentPanel;
 
 public class MainSelecter extends JFrame implements ActionListener {
@@ -33,6 +34,10 @@ public class MainSelecter extends JFrame implements ActionListener {
 	// トーナメント画面を表示するためのPanelクラス
 	private TournamentPanel tour_view;
 	
+	// ログはsystem ioに流すので、そのためのクラス
+	LogToSystemIO log2systemio = new LogToSystemIO();
+	
+	// UDP通信の取りまとめ
 	private UdpSocket udp;
 
 	public MainSelecter() {
@@ -75,7 +80,7 @@ public class MainSelecter extends JFrame implements ActionListener {
 		TeamList team_list = new TeamList(ex);
 		Tournament tour = new Tournament(ex);
 
-		udp = new UdpSocket(ex, null);
+		udp = new UdpSocket(ex, log2systemio);
 
 		// -----------------------------------------------------
 		// set listener
