@@ -6,12 +6,13 @@ import java.util.Deque;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 
-import communication.data_getter.DatabaseGetterListener;
-import communication.data_getter.TcpDataGetter;
+import communication.dataGetter.DatabaseGetterListener;
+import communication.dataGetter.TcpDataGetter;
 import communication.udp.ServerUpdateListener;
 import data.communication.ServerData;
 import data.exception.IllegalTypeOfClassException;
-import window.tournament.UpdateDatabaseListener;
+import window.cardTournament.UpdateDatabaseListener;
+import window.main.LogMessageAdapter;
 
 public class Game implements ServerUpdateListener, DatabaseGetterListener, UpdateDatabaseListener {
 	public final static int TYPE_TEAM = 0;
@@ -21,6 +22,7 @@ public class Game implements ServerUpdateListener, DatabaseGetterListener, Updat
 
 	private Executor ex;
 	private ServerData state = null;
+	private LogMessageAdapter log_mes;
 	
 	private boolean initilize = false;
 	
@@ -28,9 +30,10 @@ public class Game implements ServerUpdateListener, DatabaseGetterListener, Updat
 	private int[] seed_info;
 	
 	
-	Game(Executor ex) {
+	Game(Executor ex, LogMessageAdapter log_mes) {
 		this.num_team = 2;
 		this.ex = ex;
+		this.log_mes = log_mes;
 		
 		root = new GameNode(new GameNode(0), new GameNode(1));
 	}
@@ -65,8 +68,8 @@ public class Game implements ServerUpdateListener, DatabaseGetterListener, Updat
 	}
 
 	public void update_tournament(){
-		System.out.println("----------------- update tournament -----------------");
-		ex.execute( new TcpDataGetter(TcpDataGetter.TYPE.TOUR, this, this.state) );
+		log_mes.log_println("----------------- update tournament -----------------");
+		ex.execute( new TcpDataGetter(TcpDataGetter.TYPE.TOUR, this, this.state, log_mes) );
 	}
 
 	

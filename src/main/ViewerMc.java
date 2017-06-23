@@ -19,7 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import communication.udp.StateUpdateListener;
 import data.communication.StateData;
-import window.tournament.TournamentPanel;
+import window.cardTournament.TournamentPanel;
 
 public class ViewerMc extends JFrame implements ActionListener, StateUpdateListener, Runnable {
 	private static final long serialVersionUID = 1L;

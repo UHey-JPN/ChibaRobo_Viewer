@@ -6,16 +6,17 @@ import java.util.concurrent.Executor;
 
 import communication.udp.ServerUpdateListener;
 import communication.udp.TournamentUpdateListener;
-import window.tournament.UpdateDatabaseListener;
-import window.tournament.UpdateTourViewListener;
+import window.cardTournament.UpdateDatabaseListener;
+import window.cardTournament.UpdateTourViewListener;
+import window.main.LogMessageAdapter;
 
 public class Tournament implements TournamentUpdateListener{
 	private Game game_data;
 	private int[] result;
 	private UpdateTourViewListener update_view_listener;
 
-	public Tournament(Executor ex) {
-		game_data = new Game(ex);
+	public Tournament(Executor ex, LogMessageAdapter log_mes) {
+		game_data = new Game(ex, log_mes);
 	}
 
 	public void set_UpdateTourViewListener(UpdateTourViewListener l){

@@ -1,4 +1,4 @@
-package communication.data_getter;
+package communication.dataGetter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import data.communication.ServerData;
+import window.main.LogMessageAdapter;
 
 public class TcpDataGetter implements Runnable {
 	public static enum TYPE {
@@ -28,13 +29,15 @@ public class TcpDataGetter implements Runnable {
 	private TYPE type;
 	private DatabaseGetterListener listener;
 	private ServerData state;
+	private LogMessageAdapter log_mes;
 	
-	public TcpDataGetter(TYPE type, DatabaseGetterListener listener, ServerData state) {
+	public TcpDataGetter(TYPE type, DatabaseGetterListener listener, ServerData state, LogMessageAdapter log_mes) {
 		this.type = type;
 		this.listener = listener;
 		this.state = state;
+		this.log_mes = log_mes;
 		
-		System.out.println("data request (" + this.type.label() + ")");
+		log_mes.log_println("data request (" + this.type.label() + ")");
 	}
 
 	@Override
@@ -56,7 +59,7 @@ public class TcpDataGetter implements Runnable {
 			{
 				String line;
 				line = in.readLine();
-				System.out.println(line + " (get from server, in " + type.label() +" data)");
+				log_mes.log_println(line + " (get from server, in " + type.label() +" data)");
 				if( ! line.matches("ACK") ) return;
 			}
 			

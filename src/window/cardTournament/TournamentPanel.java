@@ -1,4 +1,4 @@
-package window.tournament;
+package window.cardTournament;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

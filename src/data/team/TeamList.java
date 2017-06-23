@@ -5,24 +5,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import communication.data_getter.DatabaseGetterListener;
-import communication.data_getter.TcpDataGetter;
+import communication.dataGetter.DatabaseGetterListener;
+import communication.dataGetter.TcpDataGetter;
 import communication.udp.ServerUpdateListener;
 import data.communication.ServerData;
 import data.exception.DataNotFoundException;
-import window.tournament.UpdateDatabaseListener;
-import window.tournament.UpdateTourViewListener;
+import window.cardTournament.UpdateDatabaseListener;
+import window.cardTournament.UpdateTourViewListener;
+import window.main.LogMessageAdapter;
 
 public class TeamList implements ServerUpdateListener, DatabaseGetterListener, UpdateDatabaseListener {
 	private List<Team> list;
 	private Executor ex;
 	private ServerData state = null;
+	private LogMessageAdapter log_mes;
 	private UpdateTourViewListener update_view_listener;
 	private boolean initialize = false;
 
-	public TeamList(Executor ex) {
+	public TeamList(Executor ex, LogMessageAdapter log_mes) {
 		list = Collections.synchronizedList(new ArrayList<Team>());
 		this.ex = ex;
+		this.log_mes = log_mes;
 	}
 	
 	public boolean add(int id, String name, int id1, int id2, String desc){
@@ -81,8 +84,8 @@ public class TeamList implements ServerUpdateListener, DatabaseGetterListener, U
 	}
 
 	public void update_team_list(){
-		System.out.println("----------------- update team list -----------------");
-		ex.execute( new TcpDataGetter(TcpDataGetter.TYPE.TEAM, this, this.state) );
+		log_mes.log_println("----------------- update team list -----------------");
+		ex.execute( new TcpDataGetter(TcpDataGetter.TYPE.TEAM, this, this.state, log_mes) );
 	}
 	
 	@Override

@@ -19,8 +19,8 @@ import communication.udp.UdpSocket;
 import data.robot.RoboList;
 import data.team.TeamList;
 import data.tournament.Tournament;
+import window.cardTournament.TournamentPanel;
 import window.main.LogToSystemIO;
-import window.tournament.TournamentPanel;
 
 public class MainSelecter extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -76,9 +76,9 @@ public class MainSelecter extends JFrame implements ActionListener {
 		Executor ex = Executors.newCachedThreadPool();
 		tour_view = new TournamentPanel();
 		
-		RoboList robo_list = new RoboList(ex);
-		TeamList team_list = new TeamList(ex);
-		Tournament tour = new Tournament(ex);
+		RoboList robo_list = new RoboList(ex, log2systemio);
+		TeamList team_list = new TeamList(ex, log2systemio);
+		Tournament tour = new Tournament(ex, log2systemio);
 
 		udp = new UdpSocket(ex, log2systemio);
 

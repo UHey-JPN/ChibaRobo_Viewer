@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
-import window.tournament.TournamentPanel;
+import window.cardTournament.TournamentPanel;
 
 public class ViewerTour extends JFrame {
 	private static final long serialVersionUID = 1L;

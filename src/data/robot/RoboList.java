@@ -5,26 +5,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import communication.data_getter.TcpDataGetter;
+import communication.dataGetter.DatabaseGetterListener;
+import communication.dataGetter.TcpDataGetter;
 import communication.udp.ServerUpdateListener;
-import communication.data_getter.DatabaseGetterListener;
 import data.communication.ServerData;
 import data.exception.DataNotFoundException;
-import window.tournament.UpdateDatabaseListener;
-import window.tournament.UpdateTourViewListener;
+import window.cardTournament.UpdateDatabaseListener;
+import window.cardTournament.UpdateTourViewListener;
+import window.main.LogMessageAdapter;
 
 public class RoboList implements ServerUpdateListener, DatabaseGetterListener, UpdateDatabaseListener{
 	private List<Robot> list;
 	private final Object lock_obj = new Object();
 	private Executor ex;
 	private ServerData state = null;
+	private LogMessageAdapter log_mes;
 	private UpdateTourViewListener update_view_listener;
 	private boolean initialize = false;
 	
 	
-	public RoboList(Executor ex) {
+	public RoboList(Executor ex, LogMessageAdapter log_mes) {
 		this.list = Collections.synchronizedList(new ArrayList<Robot>());
 		this.ex = ex;
+		this.log_mes = log_mes;
 	}
 	
 	public boolean add(int id, String data){
@@ -61,8 +64,8 @@ public class RoboList implements ServerUpdateListener, DatabaseGetterListener, U
 	}
 	
 	public void update_robot_list(){
-		System.out.println("----------------- update robot list -----------------");
-		ex.execute( new TcpDataGetter(TcpDataGetter.TYPE.ROBOT, this, this.state) );
+		log_mes.log_println("----------------- update robot list -----------------");
+		ex.execute( new TcpDataGetter(TcpDataGetter.TYPE.ROBOT, this, this.state, log_mes) );
 	}
 
 	@Override
