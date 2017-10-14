@@ -9,13 +9,13 @@ import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 public class TeamInfoDisplay extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel team_name = new JLabel("No Team");
-	private TitledBorder[] robo_name = { new TitledBorder("No Robot"), new TitledBorder("No Robot")};
+	private LineBorder border = new LineBorder(Color.black, 2);
+	private JLabel[] robo_name = {new JLabel("No Robot"), new JLabel("No Robot")};
 	private JLabel[] creater = {new JLabel("No Creator"), new JLabel("No Creator")};
 	private JLabel[] grade = {new JLabel("No Grade"), new JLabel("No Grade")};
 	
@@ -37,16 +37,19 @@ public class TeamInfoDisplay extends JPanel {
 			JPanel p = new JPanel();
 			p.setOpaque(false);
 			
-			robo_name[i].setTitleFont(new Font("", Font.BOLD, 30));
+			robo_name[i].setFont(new Font("", Font.BOLD, 30));
+			robo_name[i].setHorizontalAlignment(JLabel.CENTER);
 			grade[i].setFont(new Font("", Font.BOLD, 30));
 			grade[i].setHorizontalAlignment(JLabel.CENTER);
 			creater[i].setFont(new Font("", Font.BOLD, 30));
 			creater[i].setHorizontalAlignment(JLabel.CENTER);
 
-			CompoundBorder border = new CompoundBorder(new EmptyBorder(10,10,10,10), robo_name[i]);
+			CompoundBorder inside_border = new CompoundBorder(border, new EmptyBorder(10,10,10,10));
+			CompoundBorder outside_border = new CompoundBorder(new EmptyBorder(10,10,10,10), inside_border);
 
-			p.setBorder(border);
-			p.setLayout(new GridLayout(2,1));
+			p.setBorder(outside_border);
+			p.setLayout(new GridLayout(3,1));
+			p.add(robo_name[i]);
 			p.add(grade[i]);
 			p.add(creater[i]);
 			this.add(p);
@@ -64,7 +67,7 @@ public class TeamInfoDisplay extends JPanel {
 		
 		s = robot0.split(",");
 		if( s.length >= 4 ){
-			robo_name[0].setTitle(s[1]);
+			robo_name[0].setText(s[1]);
 			creater[0].setText(s[2]);
 			grade[0].setText(s[3]);
 		}else{
@@ -73,11 +76,11 @@ public class TeamInfoDisplay extends JPanel {
 
 		s = robot1.split(",");
 		if( s.length >= 4 ){
-			robo_name[1].setTitle(s[1]);
+			robo_name[1].setText(s[1]);
 			creater[1].setText(s[2]);
 			grade[1].setText(s[3]);
 		}else{
-			System.out.println("robo0 is illegal.:" + robot1);
+			System.out.println("robo1 is illegal.:" + robot1);
 		}
 	}
 
