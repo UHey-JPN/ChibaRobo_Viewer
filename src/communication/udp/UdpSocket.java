@@ -109,8 +109,7 @@ public class UdpSocket implements Runnable{
 		String[] robot_desc = {pac_data[7], pac_data[8], pac_data[10], pac_data[11]};
 		
 		if( show_state != null ){
-			if( show_state.get_pac_id() == pac_id )
-				return;
+			if( show_state.get_pac_id() == pac_id ) return;
 		}
 		
 		show_state = new StateData( 
