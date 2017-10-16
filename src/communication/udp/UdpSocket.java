@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -215,6 +216,8 @@ public class UdpSocket implements Runnable{
 		while(true){
 			byte[] buf = new byte[BUF_SIZE];
 			DatagramPacket pac = new DatagramPacket(buf, buf.length);
+			String str_packet;
+			
 			//----------------------------------------
 			// wait and receive
 			try {
@@ -224,7 +227,14 @@ public class UdpSocket implements Runnable{
 				log_mes.log_print(e);
 			}
 			
-			String str_packet = new String(buf);
+			//----------------------------------------
+			// 文字列をUTF-8でデコード
+			try {
+				str_packet = new String(buf, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				return;
+			}
 			
 			//----------------------------------------
 			// processing packet
