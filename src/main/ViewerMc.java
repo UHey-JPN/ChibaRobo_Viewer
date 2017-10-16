@@ -24,7 +24,7 @@ import window.cardTournament.TournamentPanel;
 public class ViewerMc extends JFrame implements ActionListener, StateUpdateListener, Runnable {
 	private static final long serialVersionUID = 1L;
 	
-	private final static int WIDTH_TEAM_INFO = 600;
+	private final static int WIDTH_TOUR_INFO = 450;
 
 	private TeamInfoDisplay l_infomation = new TeamInfoDisplay();
 	private TeamInfoDisplay r_infomation = new TeamInfoDisplay();
@@ -40,7 +40,7 @@ public class ViewerMc extends JFrame implements ActionListener, StateUpdateListe
 	
 	
 	public ViewerMc(TournamentPanel t_view) {
-		this.setSize(1366, 768);
+		this.setSize(1024, 768);
 		this.setTitle("MC Mode");
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,16 +55,17 @@ public class ViewerMc extends JFrame implements ActionListener, StateUpdateListe
 		info_panel.add(l_infomation);
 		info_panel.add(r_infomation);
 		
-		info_btn_panel.setPreferredSize(new Dimension(WIDTH_TEAM_INFO, 300));
 		info_btn_panel.setLayout(new BorderLayout());
 		info_btn_panel.add(l_now_time, BorderLayout.NORTH);
-		info_btn_panel.add(info_panel);
+		info_btn_panel.add(info_panel, BorderLayout.CENTER);
 		info_btn_panel.add(flip_btn, BorderLayout.SOUTH);
+		
+		t_view.setPreferredSize(new Dimension(WIDTH_TOUR_INFO, 300));
 		
 		this.getContentPane().removeAll();
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().add(t_view, BorderLayout.CENTER);
-		this.getContentPane().add(info_btn_panel, BorderLayout.EAST);
+		this.getContentPane().add(t_view, BorderLayout.WEST);
+		this.getContentPane().add(info_btn_panel, BorderLayout.CENTER);
 		
 		flip_btn.addActionListener(this);
 		
