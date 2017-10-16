@@ -1,5 +1,7 @@
 package window.main;
 
+import window.logger.LogMessageAdapter;
+
 public class LogToSystemIO implements LogMessageAdapter {
 
 	@Override
