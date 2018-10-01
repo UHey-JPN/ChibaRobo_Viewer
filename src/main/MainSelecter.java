@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
@@ -19,6 +20,7 @@ import communication.udp.UdpSocket;
 import data.robot.RoboList;
 import data.team.TeamList;
 import data.tournament.Tournament;
+import httpServer.HttpServer;
 import window.cardTournament.TournamentPanel;
 import window.main.LogToSystemIO;
 
@@ -30,6 +32,7 @@ public class MainSelecter extends JFrame implements ActionListener {
 	private JButton btn_mc_mode = new JButton("MC Mode");
 	private JButton btn_view_mode = new JButton("Tournament");
 	private JButton[] mode_btn = { btn_mc_mode, btn_view_mode };
+	private JCheckBox check = new JCheckBox("Wake UP HTTP server");
 	
 	// トーナメント画面を表示するためのPanelクラス
 	private TournamentPanel tour_view;
@@ -37,8 +40,16 @@ public class MainSelecter extends JFrame implements ActionListener {
 	// ログはsystem ioに流すので、そのためのクラス
 	LogToSystemIO log2systemio = new LogToSystemIO();
 	
+	// スレッド起動のためのスレッドプール
+	private Executor ex;
+	
 	// UDP通信の取りまとめ
 	private UdpSocket udp;
+	
+	// 試合関係のデータクラス
+	private RoboList robo_list;
+	private TeamList team_list;
+	private Tournament tour ;
 
 	public MainSelecter() {
 		// -----------------------------------------------------
@@ -68,17 +79,18 @@ public class MainSelecter extends JFrame implements ActionListener {
 		}
 		
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().add(select_panel);
+		this.getContentPane().add(select_panel, BorderLayout.CENTER);
+		this.getContentPane().add(check, BorderLayout.SOUTH);
 		
 		
 		// -----------------------------------------------------
 		// 選択後に使用するTournamentPanelの設定
-		Executor ex = Executors.newCachedThreadPool();
+		ex = Executors.newCachedThreadPool();
 		tour_view = new TournamentPanel();
 		
-		RoboList robo_list = new RoboList(ex, log2systemio);
-		TeamList team_list = new TeamList(ex, log2systemio);
-		Tournament tour = new Tournament(ex, log2systemio);
+		robo_list = new RoboList(ex, log2systemio);
+		team_list = new TeamList(ex, log2systemio);
+		tour = new Tournament(ex, log2systemio);
 
 		udp = new UdpSocket(ex, log2systemio);
 
@@ -118,6 +130,11 @@ public class MainSelecter extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// 選択画面を非表示に
 		this.setVisible(false);
+		
+		// HTTPサーバを起動するかどうか
+		if(check.isSelected()) {
+			new HttpServer(ex, robo_list, team_list, tour);
+		}
 		
 		if( e.getSource() == btn_mc_mode ){
 			tour_view.draw_now_game();
