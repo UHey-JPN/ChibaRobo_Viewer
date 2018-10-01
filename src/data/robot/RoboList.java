@@ -105,6 +105,28 @@ public class RoboList implements ServerUpdateListener, DatabaseGetterListener, U
 		
 	}
 	
+	public String get_creator(int id) throws DataNotFoundException {
+		synchronized(lock_obj){
+			for(Robot r : list){
+				if(r.get_id() == id){
+					return r.get_creater();
+				}
+			}
+			throw new DataNotFoundException("Robot(id=" + id + ") is not found.");
+		}
+	}
+	
+	public String get_grade(int id) throws DataNotFoundException {
+		synchronized(lock_obj){
+			for(Robot r : list){
+				if(r.get_id() == id){
+					return r.get_grade();
+				}
+			}
+			throw new DataNotFoundException("Robot(id=" + id + ") is not found.");
+		}
+	}
+	
 	public String get_desc(int id) throws DataNotFoundException {
 		synchronized(lock_obj){
 			for(Robot r : list){
@@ -114,6 +136,5 @@ public class RoboList implements ServerUpdateListener, DatabaseGetterListener, U
 			}
 			throw new DataNotFoundException("Robot(id=" + id + ") is not found.");
 		}
-		
 	}
 }

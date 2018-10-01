@@ -133,8 +133,9 @@ public class MainSelecter extends JFrame implements ActionListener {
 		
 		// HTTPサーバを起動するかどうか
 		if(check.isSelected()) {
-			new HttpServer(ex, robo_list, team_list, tour);
-		}
+			HttpServer httpServer = new HttpServer(ex, robo_list, team_list, tour);
+			udp.add_StateUpdateListener( httpServer );
+			}
 		
 		if( e.getSource() == btn_mc_mode ){
 			tour_view.draw_now_game();

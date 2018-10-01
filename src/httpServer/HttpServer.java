@@ -9,17 +9,20 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import communication.udp.StateUpdateListener;
+import data.communication.StateData;
 import data.robot.RoboList;
 import data.team.TeamList;
 import data.tournament.Tournament;
 
-public class HttpServer implements Runnable{
+public class HttpServer implements Runnable, StateUpdateListener{
 	private static final int HTTP_PORT = 8080;
 	private ServerSocket listen;
 	private Executor ex;
 	private RoboList robo_list;
 	private TeamList team_list;
 	private Tournament tour;
+	private StateData state;
 
 
 	public HttpServer(
@@ -55,7 +58,7 @@ public class HttpServer implements Runnable{
 			try {
 				Socket soc = listen.accept();
 				System.out.println("[" + soc.getPort() + "]" + "connected from" + soc.getRemoteSocketAddress());
-				ex.execute(new HttpSocket(soc, robo_list, team_list, tour));
+				ex.execute(new HttpSocket(soc, robo_list, team_list, tour, state));
 				
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -63,5 +66,12 @@ public class HttpServer implements Runnable{
 		}
 		
 	}
+
+	@Override
+	public void state_update(StateData _state) {
+		this.state = _state;
+		
+	}
+
 
 }

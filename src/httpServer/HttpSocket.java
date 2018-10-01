@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import data.communication.StateData;
 import data.robot.RoboList;
 import data.team.TeamList;
 import data.tournament.Tournament;
@@ -18,17 +19,20 @@ public class HttpSocket implements Runnable {
 	private TeamList team_list;
 	private Tournament tour;
 	private String str_port;
+	private StateData state;
 
 	public HttpSocket(
 			Socket _soc,
 			RoboList _robo_list,
 			TeamList _team_list,
-			Tournament _tour
+			Tournament _tour,
+			StateData _state
 	) {
 		this.soc = _soc;
 		this.robo_list = _robo_list;
 		this.team_list = _team_list;
 		this.tour = _tour;
+		this.state = _state;
 		
 		str_port = "[" + soc.getPort() + "]";
 	}
@@ -61,9 +65,19 @@ public class HttpSocket implements Runnable {
 				HttpData.send_team_page(out, robo_list, team_list, tour);
 				
 			} else if(split[1].equals("/status")) {
-				out.write(HttpData.HEADER_OK);
-				out.write(HttpData.PAGE_STATUS);
-				out.flush();
+				if(state == null) {
+					// ページの表示
+					out.write(HttpData.HEADER_OK);
+					out.write(HttpData.PAGE_H_STATUS);
+					out.write("<br>Error! Please Update Show Mode.<br>" + CRLF);
+					out.write(HttpData.PAGE_F_STATUS);
+					out.flush();
+				}else {
+					int[] team = {1,2};
+					team[1] = Integer.valueOf(state.get_team_desc()[0].split(",")[0]);
+					team[0] = Integer.valueOf(state.get_team_desc()[1].split(",")[0]);
+					HttpData.send_status_page(out, robo_list, team_list, tour, team, -1);
+				}
 				
 			} else {
 				out.write(HttpData.HEADER_404);
