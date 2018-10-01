@@ -92,4 +92,28 @@ public class RoboList implements ServerUpdateListener, DatabaseGetterListener, U
 		this.update_robot_list();
 	}
 
+	
+	public String get_name(int id) throws DataNotFoundException {
+		synchronized(lock_obj){
+			for(Robot r : list){
+				if(r.get_id() == id){
+					return r.get_name();
+				}
+			}
+			throw new DataNotFoundException("Robot(id=" + id + ") is not found.");
+		}
+		
+	}
+	
+	public String get_desc(int id) throws DataNotFoundException {
+		synchronized(lock_obj){
+			for(Robot r : list){
+				if(r.get_id() == id){
+					return r.get_desc();
+				}
+			}
+			throw new DataNotFoundException("Robot(id=" + id + ") is not found.");
+		}
+		
+	}
 }
