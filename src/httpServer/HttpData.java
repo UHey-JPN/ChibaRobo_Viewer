@@ -1,17 +1,4 @@
-
 package httpServer;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import data.exception.DataNotFoundException;
-import data.robot.RoboList;
-import data.team.TeamList;
-import data.tournament.Tournament;
 
 public class HttpData {
 	public static final String CRLF = "\r\n";
@@ -28,8 +15,10 @@ public class HttpData {
 
 	public static String PAGE_ROOT
 		= "<h1>Chibarobo Viewer</h1>"
-		+ "<a href=\"/team_list\">team list</a><br>"
-		+ "<a href=\"/status\">status</a><br>";
+		+ "<font size=\"10\"><a href=\"/team_list\">team list</a></font><br>"
+		+ "<font size=\"10\"><a href=\"/status\">status</a></font><br>"
+//		+ "<font size=\"10\"><a href=\"/team_list_mc\">team list(MC)</a></font><br>"
+		;
 
 	
 	public static String PAGE_H_TEAM
@@ -40,7 +29,8 @@ public class HttpData {
 		+ "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"
 		+ "</head>"
 		+ "<body>"
-		+ "<h1>千葉ロボ ロボットリスト・チームリスト</h1>";
+		+ "<h1>千葉ロボ ロボットリスト・チームリスト</h1>"
+		;
 
 	public static String PAGE_H_STATUS
 	= "<!DOCTYPE html>"
@@ -65,61 +55,254 @@ public class HttpData {
 	public static String PAGE_404
 		= "<h1>404 Not Found</h1>";
 
+	public static final String HTML_STATUS
+	= "<!doctype html>"
+	+ "<html>"
+	+ "<head>"
+	+ "	<style>"
+	+ ""
+	+ "		.tableline{"
+	+ "			letter-spacing: -.4em; /*inline-blockの隙間対策*/"
+	+ "			width:98%;"
+	+ "			margin-left: auto;"
+	+ "			margin-right: auto;"
+	+ "			margin-bottom:0.4%;"
+	+ "			display:table;"
+	+ "			table-layout: fixed;"
+	+ "		}"
+	+ "		.tablecont{"
+	+ "			padding-left:0.5%;"
+	+ "			letter-spacing: normal; /*inline-blockの隙間対策*/"
+	+ "			display:table-cell;"
+	+ "			width:21%;"
+	+ "			margin-left:0.2%;"
+	+ "			"
+	+ "		"
+	+ "		}"
+	+ "		.tablecont2{"
+	+ ""
+	+ "			padding-left:0.5%;"
+	+ "			letter-spacing: normal; /*inline-blockの隙間対策*/"
+	+ "			display:table-cell;"
+	+ "			width:42.7%;"
+	+ "			margin-left:0.2%;"
+	+ "			height:100%;"
+	+ "		}"
+	+ "		.tablecont3{"
+	+ "			padding:0;"
+	+ "			letter-spacing: normal; /*inline-blockの隙間対策*/"
+	+ "			display:table-cell;"
+	+ "			width:42.7%;"
+	+ "			margin-left:0.2%;"
+	+ "			height:100%;"
+	+ "		}"
+	+ "		.cont{"
+	+ "			"
+	+ "			padding:3px;"
+	+ "			word-wrap: break-word;"
+	+ "		}"
+	+ "		.rowtitle{"
+	+ "			margin-left: 1%;"
+	+ "			letter-spacing: normal; /*inline-blockの隙間対策*/"
+	+ "			background:#75EAA7;"
+	+ "			display:table-cell;"
+	+ "			width:8%;"
+	+ "		}"
+	+ "		.rowtitle2{"
+	+ "			margin-left: 1%;"
+	+ "			letter-spacing: normal; /*inline-blockの隙間対策*/"
+	+ ""
+	+ "			display:table-cell;"
+	+ "			width:8%;"
+	+ "		}"
+	+ "		.roundall{"
+	+ "			border-radius: 6px;"
+	+ "			"
+	+ "		}"
+	+ "		.roundright{"
+	+ "			border-bottom-right-radius: 6px;"
+	+ "			border-top-right-radius: 6px"
+	+ "		}"
+	+ "		.roundleft{"
+	+ "			border-bottom-left-radius: 6px;"
+	+ "			border-top-left-radius: 6px"
+	+ "		}"
+	+ "		.red{"
+	+ "			background:#BC0A0A;"
+	+ "		}"
+	+ "		.blue{"
+	+ "			background:#3131F4;"
+	+ "		}"
+	+ "		.red2{"
+	+ "			background:#EA4949;"
+	+ "		}"
+	+ "		.blue2{"
+	+ "			background:#9191F9;"
+	+ "		}"
+	+ "		.redodd{"
+	+ "			background:#FFCCCC;"
+	+ "		}"
+	+ "		.redeven{"
+	+ "			background:#ED7474;"
+	+ "		}"
+	+ "		.blueodd{"
+	+ "			background:#99CCFF;"
+	+ "		}"
+	+ "		.blueeven{"
+	+ "			background:#A4A4F7;"
+	+ "		}"
+	+ "		.yellow{"
+	+ "			background:#EC8924;"
+	+ "		}"
+	+ "		.headtxt{"
+	+ "			"
+	+ "			"
+	+ "			padding:0;"
+	+ "			margin:0;"
+	+ "			color:white;"
+	+ "			text-align: center;"
+	+ "		}"
+	+ "		"
+	+ "		.reload{"
+	+ "			display:none;	"
+	+ "		}"
+	+ "		.headtxt{"
+	+ "			font-size: 50px;/* 見出し文字いじる用*/ "
+	+ "		}"
+	+ "		.big{"
+	+ "			font-size:20px;	/* 本文フォント(強調用）いじる用*/ "
+	+ "		}"
+	+ "		.normal{"
+	+ "	     font-size:16px;  /* 本文フォントいじる用*/ "
+	+ "		}"
+	+ "	</style>"
+	+ "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"
+	+ "<title>無題ドキュメント</title>"
+	+ "</head>"
+	+ "	<div class=\"tableline\">"
+	+ "	<div class=\"rowtitle2\">"
+	+ "		<label><input type=\"button\"onclick=\"window.location.reload(true);\" class=\"reload\">"
+	+ "<svg style=\"baseline-shift: baseline\"version=\"1.1\" id=\"レイヤー_1\" xmlns=\"http://www.w3.org/2000/svg\""
+	+ "	 xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\""
+	+ "	 y=\"0px\" width=\"100%\" viewBox=\"0 0 480 480\" enable-background=\"new 0 0 480 480\" xml:space=\"preserve\">"
+	+ "<path fill=\"#455A64\" d=\"M416.786,322.322l-77.752-34.387C320.659,329.217,279.286,358,231.185,358c-65.17,0-118-52.83-118-118"
+	+ "	c0-65.169,52.83-118,118-118c34.841,0,66.14,15.113,87.738,39.127L263.815,192l155.914,56.76L451.815,86l-57.549,33.125"
+	+ "	C357.278,69.297,298.009,37,231.185,37c-112.114,0-203,90.886-203,203c0,112.114,90.886,203,203,203"
+	+ "	C313.99,443,385.206,393.415,416.786,322.322z\"/>"
+	+ "</svg>"
+	+ "			</input></label>"
+	+ "</div>"
+	+ "	<div class=\"tablecont3 red roundall\">"
+	+ "		<p class=\"headtxt\">赤チーム</p>"
+	+ "	</div>"
+	+ "    <div class=\"tablecont3 blue roundall\">"
+	+ "		<p class=\"headtxt\">青チーム</p>"
+	+ "	</div>"
+	+ "</div>	"
+	+ "<div class=\"tableline\">"
+	+ "	<div class=\"rowtitle roundleft cont\">"
+	+ "		<p class=\"big\">チーム名</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont2 red2 cont\">"
+	+ "		<p class=\"big\">[!team0]</p>"
+	+ "	</div>"
+	+ "    <div class=\"tablecont2 blue2 cont roundright\">"
+	+ "		<p class=\"big\">[!team1]</p>"
+	+ "	</div>"
+	+ "</div>	"
+	+ "<div class=\"tableline\">"
+	+ "	<div class=\"rowtitle roundleft cont\">"
+	+ "		<p class=\"normal\">チーム紹介</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont2 red2 cont\">"
+	+ "		<p class=\"normal\">[!team_desc0]</p>"
+	+ "	</div>"
+	+ "    <div class=\"tablecont2 blue2 cont roundright\">"
+	+ "		<p class=\"normal\">[!team_desc1]</p>"
+	+ "	</div>"
+	+ "</div>	"
+	+ "<div class=\"tableline\">"
+	+ "	<div class=\"rowtitle roundleft cont\">"
+	+ "		<p >ロボット名</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont redodd cont\">"
+	+ "	<p class=\"big\">[!robot0_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont redeven cont\">"
+	+ "		<p class=\"big\">[!robot0_1]</p>"
+	+ "	</div>"
+	+ "    <div class=\"tablecont blueodd cont\">"
+	+ "		<p class=\"big\">[!robot1_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont blueeven cont roundright\">"
+	+ "		<p class=\"big\">[!robot1_1]</p>"
+	+ "	</div>"
+	+ "</div>"
+	+ "<div class=\"tableline\">"
+	+ "	<div class=\"rowtitle roundleft cont\">"
+	+ "		<p class=\"normal\">製作者名</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont redodd cont\">"
+	+ "		<p class=\"normal\">[!creator0_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont redeven cont\">"
+	+ "	<p class=\"normal\">[!creator0_1]</p>"
+	+ "	</div>"
+	+ "    <div class=\"tablecont blueodd cont\">"
+	+ "	<p class=\"normal\">[!creator1_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont blueeven cont roundright\">"
+	+ "	<p class=\"normal\">[!creator1_1]</p>"
+	+ "	</div>"
+	+ "</div>"
+	+ "<div class=\"tableline\">"
+	+ "	<div class=\"rowtitle roundleft cont\">"
+	+ "	<p class=\"normal\">学年</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont redodd cont\">"
+	+ "	<p class=\"normal\">[!grade0_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont redeven cont\">"
+	+ "		<p class=\"normal\">[!grade0_1]</p>"
+	+ "	</div>"
+	+ "    <div class=\"tablecont blueodd cont\">"
+	+ "	<p class=\"normal\">[!grade1_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont blueeven cont roundright\">"
+	+ "<p class=\"normal\">[!grade1_1]</p>"
+	+ "	</div>"
+	+ "</div>"
+	+ "<div class=\"tableline\">"
+	+ "	<div class=\"rowtitle roundleft cont\">"
+	+ "		<p class=\"normal\">説明</p>"
+	+ "	</div>"
+	+ "		<div class=\"tablecont redodd cont\">"
+	+ "		<p class=\"normal\">[!robot_desc0_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont redeven cont\">"
+	+ "		<p class=\"normal\">[!robot_desc0_1]</p>"
+	+ "	</div>"
+	+ "    <div class=\"tablecont blueodd cont\">"
+	+ "		<p class=\"normal\">[!robot_desc1_0]</p>"
+	+ "	</div>"
+	+ "	<div class=\"tablecont blueeven cont roundright\">"
+	+ "		<p class=\"normal\">[!robot_desc1_1]</p>"
+	+ "	</div>"
+	+ "</div>"
+	+ "<label><input type=\"button\"onclick=\"window.location.reload(true);\" class=\"reload\">"
+	+ " <div class=\"tableline yellow\">　　　"
+	+ "	 <p class=\"headtxt\" style＝\"display:inline;\">更新</p>"
+	+ "	</div>"
+	+ "</input></label>"
+	+ "<body>"
+	+ "</body>"
+	+ "</html>"
+	+ "";
 	
-	// -------------------------------------------------------------------------------
-	// send team list page
-	public static void send_team_page(
-			BufferedWriter out,
-			RoboList robo_list,
-			TeamList team_list,
-			Tournament tour
-	) throws IOException {
-		// ページ上部の表示
-		out.write(HttpData.HEADER_OK);
-		out.write(HttpData.PAGE_H_TEAM);
-		
-		// テーブルを作る
-		out.write("<table border=\"1\" width=\"500\" >");
-		out.write("<tr>");
-		out.write("<th>チーム名</th>");
-		out.write("<th>ロボット名</th>");
-		out.write("</tr>");
-
-		// チームを表示
-		int[] teamnum_list = tour.get_team_list();
-		for(int t : teamnum_list) {
-			out.write("<tr><td rowspan=\"2\">");
-			try {
-				out.write(team_list.get_team_name(t));
-			} catch (DataNotFoundException e) {
-				out.write("N/A");
-			}
-			out.write("</td><td>");
-			try {
-				out.write(robo_list.get_name(team_list.get_robot_id(t)[0]));
-			} catch (DataNotFoundException e) {
-				out.write("N/A");
-			}
-			out.write("</td></tr><tr><td>");
-			try {
-				out.write(robo_list.get_name(team_list.get_robot_id(t)[1]));
-			} catch (DataNotFoundException e) {
-				out.write("N/A");
-			}
-			out.write("</td></tr>");
-		}
-		out.write("</table>");
-		
-		// ページの下部を表示
-		out.write(HttpData.PAGE_F_TEAM);
-		out.flush();
-		
-	}
 	
-	
-	// -------------------------------------------------------------------------------
+/*	// -------------------------------------------------------------------------------
 	// send status page
-	public static void send_status_page(
+	public void send_status_page(
 			BufferedWriter out,
 			RoboList robo_list,
 			TeamList team_list,
@@ -152,46 +335,14 @@ public class HttpData {
 			}
 		}
 
-
-		String html
-			= "<table border=\"1\" width=\"100%\"><tr align=\"center\"><th /><th colspan=\"2\">"
-			+ team[0] + "</th><th colspan=\"2\">" + team[1] + "</th></tr><tr align=\"center\">"
-			+ "<td align=\"left\">"
-			+ "ロボット名" + "</td><th>"
-			+ robot[0][0] + "</th><th>"
-			+ robot[0][1] + "</th><th>"
-			+ robot[1][0] + "</th><th>"
-			+ robot[1][1] + "</th></tr><tr align=\"center\"><td align=\"left\">"
-			+ "製作者名" + "</td><td>"
-			+ creator[0][0] + "</td><td>"
-			+ creator[0][1] + "</td><td>"
-			+ creator[1][0] + "</td><td>"
-			+ creator[1][1] + "</td></tr><tr align=\"center\"><td align=\"left\">"
-			+ "学年" + "</td><td>"
-			+ grade[0][0] + "</td><td>"
-			+ grade[0][1] + "</td><td>"
-			+ grade[1][0] + "</td><td>"
-			+ grade[1][1] + "</td></tr><tr><td>"
-			+ "説明" + "</td><td>"
-			+ desc[0][0] + "</td><td>"
-			+ desc[0][1] + "</td><td>"
-			+ desc[1][0] + "</td><td>"
-			+ desc[1][1] + "</td></tr></table>";
-
 		
 		// ページ上部の表示
 		out.write(HttpData.HEADER_OK);
 		
 //		out.write(html);
         try {
-            File file = new File("./resource/status.html");
-            if (!file.exists()) {
-                System.out.print("ファイルが存在しません");
-                return;
-            }
-         
-            FileReader fileReader = new FileReader(file);
-            BufferedReader buf = new BufferedReader(fileReader);
+            InputStream in_stream = getClass().getClassLoader().getResourceAsStream("status.html");
+            BufferedReader buf = new BufferedReader(new InputStreamReader(in_stream));
             String data;
             while ((data = buf.readLine()) != null) {
             	
@@ -199,7 +350,7 @@ public class HttpData {
             }
          
             // 4.最後にファイルを閉じてリソースを開放する
-            fileReader.close();
+            in_stream.close();
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,5 +358,6 @@ public class HttpData {
 				
 		out.flush();
 		
-	}
+	}*/
+
 }

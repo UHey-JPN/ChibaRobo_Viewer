@@ -83,6 +83,17 @@ public class TeamList implements ServerUpdateListener, DatabaseGetterListener, U
 		}
 	}
 
+	public String get_team_desc(int team_id) throws DataNotFoundException{
+		synchronized(list){
+			for(Team t : list){
+				if(t.get_id() == team_id){
+					return t.get_desc();
+				}
+			}
+			throw new DataNotFoundException("Team(id=" + team_id + ") is not found.");
+		}
+	}
+
 	public void update_team_list(){
 		log_mes.log_println("----------------- update team list -----------------");
 		ex.execute( new TcpDataGetter(TcpDataGetter.TYPE.TEAM, this, this.state, log_mes) );

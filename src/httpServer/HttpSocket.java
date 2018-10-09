@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.HashMap;
 
 import data.communication.StateData;
+import data.exception.DataNotFoundException;
 import data.robot.RoboList;
 import data.team.TeamList;
 import data.tournament.Tournament;
@@ -62,7 +64,7 @@ public class HttpSocket implements Runnable {
 				out.write(HttpData.PAGE_ROOT);
 				out.flush();
 			} else if(split[1].equals("/team_list")) {
-				HttpData.send_team_page(out, robo_list, team_list, tour);
+				HtmlDecoder.send_team_page(out, robo_list, team_list, tour);
 				
 			} else if(split[1].equals("/status")) {
 				if(state == null) {
@@ -74,9 +76,28 @@ public class HttpSocket implements Runnable {
 					out.flush();
 				}else {
 					int[] team = {0,0};
+					
+					out.write(HttpData.HEADER_OK);
 					team[1] = Integer.valueOf(state.get_team_desc()[0].split(",")[0]);
 					team[0] = Integer.valueOf(state.get_team_desc()[1].split(",")[0]);
-					HttpData.send_status_page(out, robo_list, team_list, tour, team, -1);
+					
+					HashMap<String, String> k = new HashMap<String, String>();
+					for(int i = 0; i < 2; i++){
+						try {
+							k.put("team"+i, team_list.get_team_name(team[i]));
+							k.put("team_desc"+i, team_list.get_team_desc(team[i]));
+							for(int j = 0; j < 2; j++){
+								k.put("robot"+i+"_"+j, robo_list.get_name(team_list.get_robot_id(team[i])[j]));
+								k.put("creator"+i+"_"+j, robo_list.get_creator(team_list.get_robot_id(team[i])[j]));
+								k.put("grade"+i+"_"+j, robo_list.get_grade(team_list.get_robot_id(team[i])[j]));
+								k.put("robot_desc"+i+"_"+j, robo_list.get_desc(team_list.get_robot_id(team[i])[j]));
+							}
+						} catch (DataNotFoundException e) {
+							e.printStackTrace();
+						}
+					}
+
+					HtmlDecoder.send_html(out, HttpData.HTML_STATUS, k);
 				}
 				
 			} else {
