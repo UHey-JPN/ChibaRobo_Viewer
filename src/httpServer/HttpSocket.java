@@ -73,7 +73,7 @@ public class HttpSocket implements Runnable {
 					out.write(HttpData.PAGE_F_STATUS);
 					out.flush();
 				}else {
-					int[] team = {1,2};
+					int[] team = {0,0};
 					team[1] = Integer.valueOf(state.get_team_desc()[0].split(",")[0]);
 					team[0] = Integer.valueOf(state.get_team_desc()[1].split(",")[0]);
 					HttpData.send_status_page(out, robo_list, team_list, tour, team, -1);

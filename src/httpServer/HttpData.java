@@ -1,7 +1,10 @@
 
 package httpServer;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -39,31 +42,32 @@ public class HttpData {
 		+ "<body>"
 		+ "<h1>千葉ロボ ロボットリスト・チームリスト</h1>";
 
-	public static String PAGE_F_TEAM
-		= "</body>"
-		+ "</html>";
-	
 	public static String PAGE_H_STATUS
-		= "<!DOCTYPE html>"
-		+ "<html>"
-		+ "<head>"
-		+ "<title>チームリスト</title>"
-		+ "<meta http-equiv=\"refresh\" content=\"10\" >" 
-		+ "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"
-		+ "</head>"
-		+ "<body>"
-		+ "<h1>Chibarobo System Status</h1>"
-		+ "<a href=\"/\">top</a><br>";
+	= "<!DOCTYPE html>"
+	+ "<html>"
+	+ "<head>"
+	+ "<title>チームリスト</title>"
+	+ "<meta http-equiv=\"refresh\" content=\"10\" >" 
+	+ "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"
+	+ "</head>"
+	+ "<body>"
+	+ "<h1>Chibarobo System Status</h1>"
+	+ "<a href=\"/\">top</a><br>";
 
+	
 	public static String PAGE_F_STATUS
 		= "</body>"
 		+ "</html>";
-	
+	public static String PAGE_F_TEAM
+		= "</body>"
+		+ "</html>";
+
 	public static String PAGE_404
 		= "<h1>404 Not Found</h1>";
 
 	
-	
+	// -------------------------------------------------------------------------------
+	// send team list page
 	public static void send_team_page(
 			BufferedWriter out,
 			RoboList robo_list,
@@ -111,6 +115,10 @@ public class HttpData {
 		out.flush();
 		
 	}
+	
+	
+	// -------------------------------------------------------------------------------
+	// send status page
 	public static void send_status_page(
 			BufferedWriter out,
 			RoboList robo_list,
@@ -143,8 +151,8 @@ public class HttpData {
 				}
 			}
 		}
-		
-		
+
+
 		String html
 			= "<table border=\"1\" width=\"100%\"><tr align=\"center\"><th /><th colspan=\"2\">"
 			+ team[0] + "</th><th colspan=\"2\">" + team[1] + "</th></tr><tr align=\"center\">"
@@ -173,12 +181,30 @@ public class HttpData {
 		
 		// ページ上部の表示
 		out.write(HttpData.HEADER_OK);
-		out.write(HttpData.PAGE_H_STATUS);
 		
-		out.write(html);
-		
-		// ページの下部を表示
-		out.write(HttpData.PAGE_F_STATUS);
+//		out.write(html);
+        try {
+            File file = new File("./resource/status.html");
+            if (!file.exists()) {
+                System.out.print("ファイルが存在しません");
+                return;
+            }
+         
+            FileReader fileReader = new FileReader(file);
+            BufferedReader buf = new BufferedReader(fileReader);
+            String data;
+            while ((data = buf.readLine()) != null) {
+            	
+                out.write(data);
+            }
+         
+            // 4.最後にファイルを閉じてリソースを開放する
+            fileReader.close();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+				
 		out.flush();
 		
 	}
