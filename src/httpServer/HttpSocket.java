@@ -60,8 +60,8 @@ public class HttpSocket implements Runnable {
 			
 			if(split[1].equals("/")) {
 				// ルートページを表示
-				out.write(HttpData.HEADER_OK);
-				out.write(HttpData.PAGE_ROOT);
+				out.write(HtmlData.HEADER_OK);
+				out.write(HtmlData.PAGE_ROOT);
 				out.flush();
 			} else if(split[1].equals("/team_list")) {
 				HtmlDecoder.send_team_page(out, robo_list, team_list, tour);
@@ -69,15 +69,15 @@ public class HttpSocket implements Runnable {
 			} else if(split[1].equals("/status")) {
 				if(state == null) {
 					// ページの表示
-					out.write(HttpData.HEADER_OK);
-					out.write(HttpData.PAGE_H_STATUS);
+					out.write(HtmlData.HEADER_OK);
+					out.write(HtmlData.PAGE_H_STATUS);
 					out.write("<br>Error! Please Update Show Mode.<br>" + CRLF);
-					out.write(HttpData.PAGE_F_STATUS);
+					out.write(HtmlData.PAGE_F_STATUS);
 					out.flush();
 				}else {
 					int[] team = {0,0};
 					
-					out.write(HttpData.HEADER_OK);
+					out.write(HtmlData.HEADER_OK);
 					team[1] = Integer.valueOf(state.get_team_desc()[0].split(",")[0]);
 					team[0] = Integer.valueOf(state.get_team_desc()[1].split(",")[0]);
 					
@@ -97,12 +97,12 @@ public class HttpSocket implements Runnable {
 						}
 					}
 
-					HtmlDecoder.send_html(out, HttpData.HTML_STATUS, k);
+					HtmlDecoder.send_html(out, HtmlData.HTML_STATUS, k);
 				}
 				
 			} else {
-				out.write(HttpData.HEADER_404);
-				out.write(HttpData.PAGE_404);
+				out.write(HtmlData.HEADER_404);
+				out.write(HtmlData.PAGE_404);
 				System.err.println(str_port + "HTTP status 404:" + split[1]);
 				return;
 			}

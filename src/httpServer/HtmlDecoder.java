@@ -19,8 +19,8 @@ public class HtmlDecoder {
 			Tournament tour
 	) throws IOException {
 		// ページ上部の表示
-		out.write(HttpData.HEADER_OK);
-		out.write(HttpData.PAGE_H_TEAM);
+		out.write(HtmlData.HEADER_OK);
+		out.write(HtmlData.PAGE_H_TEAM);
 		
 		// テーブルを作る
 		out.write("<table border=\"1\" width=\"500\" >");
@@ -55,7 +55,7 @@ public class HtmlDecoder {
 		out.write("</table>");
 		
 		// ページの下部を表示
-		out.write(HttpData.PAGE_F_TEAM);
+		out.write(HtmlData.PAGE_F_TEAM);
 		out.flush();
 		
 	}

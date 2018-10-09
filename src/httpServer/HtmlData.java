@@ -1,6 +1,6 @@
 package httpServer;
 
-public class HttpData {
+public class HtmlData {
 	public static final String CRLF = "\r\n";
 
 	public static String HEADER_OK
@@ -337,7 +337,7 @@ public class HttpData {
 
 		
 		// ページ上部の表示
-		out.write(HttpData.HEADER_OK);
+		out.write(HtmlData.HEADER_OK);
 		
 //		out.write(html);
         try {
