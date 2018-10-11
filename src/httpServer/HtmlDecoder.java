@@ -16,7 +16,8 @@ public class HtmlDecoder {
 			BufferedWriter out,
 			RoboList robo_list,
 			TeamList team_list,
-			Tournament tour
+			Tournament tour,
+			boolean with_link
 	) throws IOException {
 		// ページ上部の表示
 		out.write(HtmlData.HEADER_OK);
@@ -33,11 +34,13 @@ public class HtmlDecoder {
 		int[] teamnum_list = tour.get_team_list();
 		for(int t : teamnum_list) {
 			out.write("<tr><td rowspan=\"2\">");
+			if(with_link) out.write("<a href=\"team/" + t + "\">");
 			try {
 				out.write(team_list.get_team_name(t));
 			} catch (DataNotFoundException e) {
 				out.write("N/A");
 			}
+			if(with_link) out.write("</a>");
 			out.write("</td><td>");
 			try {
 				out.write(robo_list.get_name(team_list.get_robot_id(t)[0]));
@@ -69,10 +72,10 @@ public class HtmlDecoder {
 			HashMap<String, String> word_map
 	) throws IOException {
 		for(String k : word_map.keySet()) {
-			System.out.println(k + "=>" + word_map.get(k));
+			// System.out.println(k + "=>" + word_map.get(k));
 			html = html.replaceAll("\\[!"+k+"\\]", word_map.get(k));
 		}
-		System.out.println(html);
+		// System.out.println(html);
 		out.write(html);
 		out.flush();
 		

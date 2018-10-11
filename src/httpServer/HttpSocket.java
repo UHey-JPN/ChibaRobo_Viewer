@@ -52,27 +52,58 @@ public class HttpSocket implements Runnable {
 			if(line == null) return;
 			System.out.println(str_port + line);
 			
-			String[] split = line.split(" ");
-			if(!split[0].equals("GET")) {
+			String[] command = line.split(" ");
+			if(!command[0].equals("GET")) {
 				System.err.println(str_port + "HTTP Request is not \"GET\"");
 				return;
 			}
 			
-			if(split[1].equals("/")) {
+			String[] location = command[1].split("/");
+			if(command[1].equals("/")) {
 				// ルートページを表示
 				out.write(HtmlData.HEADER_OK);
 				out.write(HtmlData.PAGE_ROOT);
 				out.flush();
-			} else if(split[1].equals("/team_list")) {
-				HtmlDecoder.send_team_page(out, robo_list, team_list, tour);
+			} else if(location[1].equals("team_list")) {
+				HtmlDecoder.send_team_page(out, robo_list, team_list, tour, false);
 				
-			} else if(split[1].equals("/status")) {
+			} else if(location[1].equals("team_list_mc")) {
+				HtmlDecoder.send_team_page(out, robo_list, team_list, tour, true);
+				
+			} else if(location[1].equals("team")) {
+				// 表示するチームの番号
+				int t = Integer.parseInt(location[2]);
+				
+				// 送信用データの作成
+				HashMap<String, String> map = new HashMap<String, String>();
+				try {
+					map.put("team", team_list.get_team_name(t));
+					map.put("team_desc", team_list.get_team_desc(t));
+					for(int i = 0; i < 2; i++){
+						map.put("robot"+i, robo_list.get_name(team_list.get_robot_id(t)[i]));
+						map.put("creator"+i, robo_list.get_creator(team_list.get_robot_id(t)[i]));
+						map.put("grade"+i, robo_list.get_grade(team_list.get_robot_id(t)[i]));
+						map.put("robot_desc"+i, robo_list.get_desc(team_list.get_robot_id(t)[i]));
+					}
+					out.write(HtmlData.HEADER_OK);
+					HtmlDecoder.send_html(out,HtmlData.HTML_TEAMINFO, map);
+					
+				} catch (DataNotFoundException e) {
+					out.write(HtmlData.HEADER_OK);
+					out.write(HtmlData.PAGE_H_SIMPLE);
+					out.write("<br>Error! チームデータが存在しません。<br>" + CRLF);
+					out.write(HtmlData.PAGE_F_SIMPLE);
+					out.flush();
+					e.printStackTrace();
+				}
+				
+			} else if(location[1].equals("status")) {
 				if(state == null) {
 					// ページの表示
 					out.write(HtmlData.HEADER_OK);
-					out.write(HtmlData.PAGE_H_STATUS);
+					out.write(HtmlData.PAGE_H_SIMPLE);
 					out.write("<br>Error! Please Update Show Mode.<br>" + CRLF);
-					out.write(HtmlData.PAGE_F_STATUS);
+					out.write(HtmlData.PAGE_F_SIMPLE);
 					out.flush();
 				}else {
 					int[] team = {0,0};
@@ -81,29 +112,31 @@ public class HttpSocket implements Runnable {
 					team[1] = Integer.valueOf(state.get_team_desc()[0].split(",")[0]);
 					team[0] = Integer.valueOf(state.get_team_desc()[1].split(",")[0]);
 					
-					HashMap<String, String> k = new HashMap<String, String>();
+					// 送信用データの作成
+					HashMap<String, String> map = new HashMap<String, String>();
 					for(int i = 0; i < 2; i++){
 						try {
-							k.put("team"+i, team_list.get_team_name(team[i]));
-							k.put("team_desc"+i, team_list.get_team_desc(team[i]));
+							map.put("team"+i, team_list.get_team_name(team[i]));
+							map.put("team_desc"+i, team_list.get_team_desc(team[i]));
 							for(int j = 0; j < 2; j++){
-								k.put("robot"+i+"_"+j, robo_list.get_name(team_list.get_robot_id(team[i])[j]));
-								k.put("creator"+i+"_"+j, robo_list.get_creator(team_list.get_robot_id(team[i])[j]));
-								k.put("grade"+i+"_"+j, robo_list.get_grade(team_list.get_robot_id(team[i])[j]));
-								k.put("robot_desc"+i+"_"+j, robo_list.get_desc(team_list.get_robot_id(team[i])[j]));
+								map.put("robot"+i+"_"+j, robo_list.get_name(team_list.get_robot_id(team[i])[j]));
+								map.put("creator"+i+"_"+j, robo_list.get_creator(team_list.get_robot_id(team[i])[j]));
+								map.put("grade"+i+"_"+j, robo_list.get_grade(team_list.get_robot_id(team[i])[j]));
+								map.put("robot_desc"+i+"_"+j, robo_list.get_desc(team_list.get_robot_id(team[i])[j]));
 							}
 						} catch (DataNotFoundException e) {
 							e.printStackTrace();
 						}
 					}
 
-					HtmlDecoder.send_html(out, HtmlData.HTML_STATUS, k);
+					// データをハッシュマップで置き換えて送信
+					HtmlDecoder.send_html(out, HtmlData.HTML_STATUS, map);
 				}
 				
 			} else {
 				out.write(HtmlData.HEADER_404);
 				out.write(HtmlData.PAGE_404);
-				System.err.println(str_port + "HTTP status 404:" + split[1]);
+				System.err.println(str_port + "HTTP status 404:" + command[1]);
 				return;
 			}
 			
