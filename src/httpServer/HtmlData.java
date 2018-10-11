@@ -16,8 +16,8 @@ public class HtmlData {
 	public static String PAGE_ROOT
 		= "<h1>Chibarobo Viewer</h1>"
 		+ "<font size=\"10\"><a href=\"/team_list\">team list</a></font><br>"
-		+ "<font size=\"10\"><a href=\"/status\">status</a></font><br>"
 //		+ "<font size=\"10\"><a href=\"/team_list_mc\">team list(MC)</a></font><br>"
+		+ "<font size=\"10\"><a href=\"/status\">status</a></font><br>"
 		;
 
 	
@@ -298,66 +298,6 @@ public class HtmlData {
 	+ "</body>"
 	+ "</html>"
 	+ "";
-	
-	
-/*	// -------------------------------------------------------------------------------
-	// send status page
-	public void send_status_page(
-			BufferedWriter out,
-			RoboList robo_list,
-			TeamList team_list,
-			Tournament tour,
-			int[] team_num,
-			int team_win
-	) throws IOException {
-		// データ設定
-		String[] team = {new String("N/A"), new String("N/A")};
-		String[][] robot = {{new String("N/A"), new String("N/A")}, {new String("N/A"), new String("N/A")}};
-		String[][] creator  = {{new String("N/A"), new String("N/A")}, {new String("N/A"), new String("N/A")}};
-		String[][] grade = {{new String("N/A"), new String("N/A")}, {new String("N/A"), new String("N/A")}};
-		String[][] desc  = {{new String("N/A"), new String("N/A")}, {new String("N/A"), new String("N/A")}};
-		ArrayList<String[][]> list = new ArrayList<String[][]>();
-		list.add(robot); list.add(creator); list.add(grade); list.add(desc);
-		
-		for(int i = 0; i < 2; i++) {
-			try {
-				team[i] = team_list.get_team_name(team_num[i]);
-			} catch (DataNotFoundException e) {}
-			for(int j = 0; j < 2; j++) {
-				for(int k = 0; k < 4; k++) {
-					try {
-						if(k == 0) list.get(k)[i][j] = robo_list.get_name(team_list.get_robot_id(team_num[i])[j]);
-						if(k == 1) list.get(k)[i][j] = robo_list.get_creator(team_list.get_robot_id(team_num[i])[j]);
-						if(k == 2) list.get(k)[i][j] = robo_list.get_grade(team_list.get_robot_id(team_num[i])[j]);
-						if(k == 3) list.get(k)[i][j] = robo_list.get_desc(team_list.get_robot_id(team_num[i])[j]);
-					} catch (DataNotFoundException e) {}
-				}
-			}
-		}
 
-		
-		// ページ上部の表示
-		out.write(HtmlData.HEADER_OK);
-		
-//		out.write(html);
-        try {
-            InputStream in_stream = getClass().getClassLoader().getResourceAsStream("status.html");
-            BufferedReader buf = new BufferedReader(new InputStreamReader(in_stream));
-            String data;
-            while ((data = buf.readLine()) != null) {
-            	
-                out.write(data);
-            }
-         
-            // 4.最後にファイルを閉じてリソースを開放する
-            in_stream.close();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-				
-		out.flush();
-		
-	}*/
 
 }
